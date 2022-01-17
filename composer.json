@@ -6,8 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
-        "dts/ebay-sdk": "^0.1.6",
-        "dts/ebay-sdk-php": "^18.0",
         "egorlarionov1/qoo10api": "dev-master",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "6.0",
