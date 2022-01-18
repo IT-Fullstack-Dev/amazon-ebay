@@ -69,7 +69,6 @@ class ListingController extends Controller
             )
             ->selectRaw('count(id) as count,category')
             ->groupBy('category')
-            ->orderBy('id')
             ->get();
         $category = Category::where(
                     [
