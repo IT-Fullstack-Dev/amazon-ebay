@@ -25,6 +25,8 @@ class ProductInformation extends Model
     	 'sale_date',
     	 'product_size',
     	 'brand',
-		 'main_imageURL'
+		 'main_imageURL',
+		 'flag',
+		 'store_token'
     ];
 }

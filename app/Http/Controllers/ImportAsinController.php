@@ -7,6 +7,9 @@ use Qoo10\Api\Items\Goods;
 use Qoo10\Api\Qoo10ApiProcessor;
 use Qoo10\Api\Qoo10CertGenerator;
 use Illuminate\Support\Facades\Log;
+use App\Models\ProductInformation;
+use App\Models\Category;
+
 class ImportAsinController extends Controller
 {
     //
@@ -135,6 +138,41 @@ class ImportAsinController extends Controller
     public function getOrder(){
         dd("dd");
         return;
+    }
+
+    public function getItem(){
+        $list = [];
+        $result = ProductInformation::where(['flag'=>'0'])
+                  ->selectRaw('count(id) as count,category')
+                  ->groupBy('category')
+                  ->get();
+        foreach($result as $val){
+            $itemArray = ProductInformation::where(['category'=>$val['category'],'flag'=>'0'])
+                    ->get();
+             $detail = [];       
+             foreach($itemArray as $item ){
+                   array_push($detail,$item);  
+             }       
+             $oneitem = array(
+                'category'=>$val['category'],
+                'count'=>$val['count'],
+                'detail'=>$detail
+             );
+             array_push($list,$oneitem);
+        }
+
+        $category = Category::where(
+            [
+                'level' => 1
+            ]
+        )
+        ->selectRaw('cat_name,cat_id')
+        ->get();
+        return response()->json([
+            'data'=>$list,
+            'category' => $category
+            
+        ]);
     }
 
 }

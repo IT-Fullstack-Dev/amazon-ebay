@@ -110,3 +110,7 @@ Route::post('/registerEabyCategory',[ListingController::class,'registerEabyCateg
 Route::get('/getStore',[EditShopController::class,'getStore']);
 Route::post('/deleteStore',[EditShopController::class,'deleteStore']);
 Route::post('/registerBusinessPolicy',[EditShopController::class,'registerBusinessPolicy']);
+Route::get('/getItems',[ImportAsinController::class,'getItem']);
+Route::post('/saveCategory',[ListingController::class,'saveCategory']);
+Route::get('/getCheckAsin',[ListingController::class,'getCheckAsin']);
+Route::post('/getLog',[ListingController::class,'getLog']);

@@ -49,146 +49,107 @@ class CheckProductController extends Controller
 
     }
 
+    public function translateTitle($title)
+    {
+        $output = $this->translateOutput($title);
+        $eng_title = explode('"', $output)[1];
+        return $eng_title;
+    }
+
+    public function translateOutput($title)
+    {
+        $host = "http://translate.google.com/translate_a/single?client=webapp&sl=auto&tl=en&hl=en&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=gt&pc=1&otf=1&ssel=0&tsel=0&kc=1&tk=&q=".urlencode( $title );
+
+        $curl = curl_init();
+		
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $host,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Accept: */*",
+                "Accept-Encoding: gzip, deflate",
+                "Cache-Control: no-cache",
+                "Connection: keep-alive",
+                "Cookie: NID=190=NY1ox5yIwHWgl-YC23LlJa8mn9_tWoiLRHJGpd8-RMEJsnh-jrF_cOvMEWqSSsR0J7WSrvhXF-_QqJpJ1s75Ymc76YSqXjS9NxXXnQKSDPmVySE0zNlzrVLQqK3IrmTa-et4Bu-8peiwE9jGnv4QFFjgGuxD5E0Mwbe0bzCvLiU",
+                "Host: translate.google.com",
+                "Postman-Token: b8b0ae52-b3c2-479e-9c4d-7e73e0540fb8,b70b881c-dcd6-4d23-a9f3-0bd7eeff91e6",
+                "User-Agent: PostmanRuntime/7.19.0",
+                "cache-control: no-cache"
+            ),
+        ));
+
+		$output = utf8_decode(curl_exec($curl));
+        $err = curl_error($curl);
+		curl_close($curl);
+        if($err)
+            echo 'Curl Error #:' . $err;
+        else
+            return $output;
+    }
+
     public function checkProductInformation(Request $request){
 
-        
+        $productarray = [];
         $productarray = $request->productarray;
         
-        $user_id = $request->user_id;
-        $importname_id = $request->importname_id;
         $asin_check_result = [];
         $temp_asin='';
         $checkresult = 0;
         $ngword_list = [];
         $first_check_pass_count = 0;
         $second_check_pass_count = 0;
-        $total_product_count = count($productarray);
+        // $total_product_count = count($productarray);
         
         $first_check_pass_array = [];
         $second_check_pass_array = [];
-        
-    //     $ngword_array = Ngword::where(['user_id'=>$user_id])->get();
-    //     foreach($ngword_array as $ngword){
-               
-    //           array_push($ngword_list,$ngword['blackword']);  
-
-    //     }
-
-    //     foreach($productarray as $product){
-    //         $checkresult = 0;
-    //         Log::info($product);
-    //         $temp_asin = $product['asin'];
-    //         $temp_title = $product['title'];
-    //         $temp_deliver_day = $product['between_day'];
-           
-
-    //         //blackasin check
-    //         $blackasin_result = Black::where(['blackasin'=>$product['asin'],'user_id'=>$user_id])->get();
-         
-
-    //         if(count($blackasin_result)){
-    //               $checkresult = 1; // blackasin case            
-    //         }
-
-    //         //ngword check
-    //         foreach($ngword_list as $ngitem){
-               
-    //             if(strpos($temp_title,$ngitem)!==false){
-
-    //                 $checkresult = 2; //ngword case
-    //             }
-    //         }
-
-    //         //between day
-    //         if($temp_deliver_day>2 || $temp_deliver_day==null){
-                
-    //             $checkresult = 3; //between day
-    //         }
-    //         if($checkresult!=1 && $checkresult!=2 && $checkresult!=3){
-    //               array_push($first_check_pass_array,$product);
-    //               $first_check_pass_count++;
-    //         }
-    //         else{
-    //               $productcheck = ProductCheck::create([
-    //                     'user_id' => $user_id,
-    //                     'imporname_id' =>$importname_id,
-    //                     'asin' => $temp_asin,
-    //                     'checkresult' => $checkresult
-    //             ]);
-
-    //         }
-          
-           
-
-    //     }
-        
-    //     foreach($first_check_pass_array as $first_pass){
-    //         $checkresult = 0;
-    //         $temp_together_buy = $product['together_buy'];
-    //         $temp_price = $product['price'];
-    //         $temp_stock = $product['quantity'];
-           
-    //         //together buy
-    //         // if($temp_together_buy == '一緒に購入'){
-    //         //      $checkresult = 4; //together buy
-    //         // }
-
-
-    //         //no price
-    //         if($temp_price == null){
-    //             $checkresult = 5; // no price
-    //         }
-
-    //         if($temp_stock == null){
-    //             $checkresult = 6; //no stock
-    //         }
-
-    //          if($checkresult==0){
-    //             //   array_push($second_check_pass_array,$first_pass);
-    //               $second_check_pass_count++;
-    //         }
-
-    //         $productcheck = ProductCheck::create([
-    //                     'user_id' => $user_id,
-    //                     'imporname_id' =>$importname_id,
-    //                     'asin' => $temp_asin,
-    //                     'checkresult' => $checkresult
-    //             ]);
-
-    //         }
-       
-
-    //    $checkproduct_result = CheckProduct::where(['user_id'=>$user_id,'importname_id'=>$importname_id])->update(['total_count'=>$total_product_count,'1pass_count'=>$first_check_pass_count,'2pass_count'=>$second_check_pass_count]);
-
-    //    dd($second_check_pass_array);
-       Log::info($productarray);
-       foreach($productarray as $product){
-           if(is_numeric($product['price'])){
-               
-              $pass_product_register_result = ProductInformation::create([
-                'user_id' => $user_id,
-                'importname_id' => $importname_id,
-                'asin' => $product['asin'],
-                'title' => $product['title'],
-                'price' => $product['price'],
-                'quantity' => $product['quantity'],
-                'category' => $product['category'],
-                'shipping_day' =>$product['between_day'],
-                'together_buy' => $product['together_buy'],
-                'description' => $product['description'],
-                'ranking' => $product['ranking'],
-                'product_size' => $product['productsize'],
-                'brand' => $product['brand'],
-                'main_imageURL' => $product['main_imageURL']
-                ]);
-                
-                foreach($product['imageurl'] as $img){
-                   $register_product_image = ProductImage::create([
      
-                     'asin' => $product['asin'],
-                     'image_url' => $img
-                   ]);
-                }
+
+       foreach($productarray as $product){
+           Log::info($product);
+            if(is_numeric($product['price']) & is_numeric($product['quantity'])){
+              $check = ProductInformation::where(['asin'=>$product['asin']])
+                       ->get();
+              if(count($check)==0){
+                  $title = $this->translateTitle($product['title']);
+                  $description = $this->translateTitle($product['description']);
+                  try{
+                        $pass_product_register_result = ProductInformation::create([
+             
+                        'asin' => $product['asin'],
+                        'title' => $title,
+                        'price' => $product['price'],
+                        'quantity' => $product['quantity'],
+                        'category' => $product['category'],
+                        'shipping_day' =>$product['between_day'],
+                        'together_buy' => $product['together_buy'],
+                        'description' => $description,
+                        'ranking' => $product['ranking'],
+                        'product_size' => $product['productsize'],
+                        'brand' => $product['brand'],
+                        'main_imageURL' => $product['main_imageURL'],
+                        'flag'=>'0'
+                        ]);
+                    }catch(\Exception $e){
+                       continue;
+
+                  }    
+                        
+                        foreach($product['imageurl'] as $img){
+                           $register_product_image = ProductImage::create([
+             
+                             'asin' => $product['asin'],
+                             'image_url' => $img
+                           ]);
+                        }
+              
+                  
+              }         
+
            }
           
 
@@ -197,9 +158,7 @@ class CheckProductController extends Controller
         
        
         return response()->json([
-
-            'user_id' => $user_id,
-            'importname_id' =>$importname_id
+             'data'=>'true'
         ]);
 
     }

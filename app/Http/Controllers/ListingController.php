@@ -8,6 +8,8 @@ use App\Models\ProductInformation;
 use App\Models\Store;
 use App\Models\ProductImage;
 use App\Models\Category;
+use App\Models\BusinessPolicy;
+
 class ListingController extends Controller
 {
     //
@@ -194,6 +196,77 @@ class ListingController extends Controller
 
 
     }
+
+    public function saveCategory(Request $request){
+
+        // $store_token = $request->store_token;
+        // $payment_policy = $request->payment_policy;
+        // $return_policy = $request->return_policy;
+        // $shipping_policy = $request->shipping_policy;
+        // $rating = $request->rating;
+        // $price_time = $request->price_time;
+        $category_list = $request->category_list;
+        foreach($category_list as $category){
+            $category_name = $category['category'];
+            $ebay_category_id = $category['ebay_id'];
+            $result = ProductInformation::where(['category'=>$category_name,'flag'=>0])
+                      ->update(['ebay_category'=>$ebay_category_id,'store_token'=>$request->store_token]);
+
+        }
+
+        $result = BusinessPolicy::first();
+        if(isset($result)){
+            BusinessPolicy::where([
+                'id'=>$result['id']
+            ])
+            ->update([
+                'user_token'=>$request->store_token,
+                'currency_rating'=>$request->rating,
+                'price_time'=>$request->price_time,
+                'payment_id'=>$request->payment_id,
+                'payment_name'=>$request->payment_name,
+                'return_id'=>$request->return_id,
+                'return_name'=>$request->return_name,
+                'shipping_id'=>$request->shipping_id,
+                'shipping_name'=>$request->shipping_name
+            ]);
+        }
+        else{
+            BusinessPolicy::create([
+                'user_token'=>$request->store_token,
+                'currency_rating'=>$request->rating,
+                'price_time'=>$request->price_time,
+                'payment_id'=>$request->payment_id,
+                'payment_name'=>$request->payment_name,
+                'return_id'=>$request->return_id,
+                'return_name'=>$request->return_name,
+                'shipping_id'=>$request->shipping_id,
+                'shipping_name'=>$request->shipping_name
+            ]);
+        }
+        return response()->json([
+            'result' => 'true'
+        ]);
+    }
+
+    public function getCheckAsin(Request $request){
+        $result = ProductInformation::where(['flag'=>'1'])
+                  ->selectRaw('asin,ItemID,store_token')
+                  ->get();
+        return response()->json([
+             'data' => $result
+        ]);       
+
+    }
+
+    public function getLog(Request $request){
+        $result = ProductInformation::all();
+        return response()->json([
+            'data' => $result
+        ]);
+    }
+
+   
 
 
 }

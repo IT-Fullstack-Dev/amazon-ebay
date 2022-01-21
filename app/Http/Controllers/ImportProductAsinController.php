@@ -14,28 +14,13 @@ class ImportProductAsinController extends Controller
 
     		$productAsin = $request->productAsins;
     		$importname = $request->importname;
-    		$user_id = $request->user_id;
+    	
     		$productAsinArray = explode("\n",$productAsin);
-    		$productcount = count($productAsinArray);
-
-    		$insert_import_name = ImportName::create([
-    			'user_id' => $user_id,
-    			'import_name' => $importname,
-    			'productcount' => $productcount
-    		]);
-
-    		$insert_check_product = CheckProduct::create([
-    				'user_id' => $user_id,
-    				'importname_id' =>$insert_import_name->id
-    		]);
-
-			
+    		$productcount = count($productAsinArray);	
     		foreach($productAsinArray as $asin){
-    			$check_asin = ImportAsin::where(['productasin'=>$asin,'user_id'=>$user_id])->get();
+    			$check_asin = ImportAsin::where(['productasin'=>$asin])->get();
     			if(!count($check_asin)){
     				$recode = ImportAsin::create([
-    					'user_id' => $user_id,
-    					'import_name_id' => $insert_import_name->id,
     					'productasin' => $asin
     				]);
     			}
@@ -43,8 +28,8 @@ class ImportProductAsinController extends Controller
 
     		return response()->json([
     			'status' => 'true',
-    			'data' => $productAsinArray,
-    			'id'=>$insert_import_name->id
+    			'data' => $productAsinArray
+    		
     		]);
 
 
