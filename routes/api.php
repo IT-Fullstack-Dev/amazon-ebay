@@ -18,8 +18,9 @@ use App\Http\Controllers\ManageOrderController;
 use App\Http\Controllers\EditShopController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\ProductController;
-
-
+use App\Http\Controllers\DescriptionController;
+use App\Http\Controllers\EmailTemplateController;
+use App\Http\Controllers\OrderController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -114,3 +115,12 @@ Route::get('/getItems',[ImportAsinController::class,'getItem']);
 Route::post('/saveCategory',[ListingController::class,'saveCategory']);
 Route::get('/getCheckAsin',[ListingController::class,'getCheckAsin']);
 Route::post('/getLog',[ListingController::class,'getLog']);
+Route::post('/editProductName',[ListingController::class,'editProductName']);
+Route::post('/deleteRow',[ListingController::class,'deleteRow']);
+Route::get('/getDescription',[DescriptionController::class,'getDescription']);
+Route::post('/registerDescription',[DescriptionController::class,'registerDescription']);
+Route::post('/deleteDescription',[DescriptionController::class,'deleteDescription']);
+Route::post('/registerEmailTemplate',[EmailTemplateController::class,'register']);
+Route::get('/getEmailTemplate',[EmailTemplateController::class,'getEmailTemplate']);
+Route::post('/deleteEmailTemplate',[EmailTemplateController::class,'deleteEmailTemplate']);
+Route::post('/registerOrders',[OrderController::class,'registerOrders']);

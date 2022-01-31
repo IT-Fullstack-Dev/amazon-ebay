@@ -228,7 +228,9 @@ class ListingController extends Controller
                 'return_id'=>$request->return_id,
                 'return_name'=>$request->return_name,
                 'shipping_id'=>$request->shipping_id,
-                'shipping_name'=>$request->shipping_name
+                'shipping_name'=>$request->shipping_name,
+                'description'=>$request->description,
+                'product_state'=>$request->product_state
             ]);
         }
         else{
@@ -241,7 +243,10 @@ class ListingController extends Controller
                 'return_id'=>$request->return_id,
                 'return_name'=>$request->return_name,
                 'shipping_id'=>$request->shipping_id,
-                'shipping_name'=>$request->shipping_name
+                'shipping_name'=>$request->shipping_name,
+                'description'=>$request->description,
+                'product_state'=>$request->product_state
+
             ]);
         }
         return response()->json([
@@ -265,7 +270,25 @@ class ListingController extends Controller
             'data' => $result
         ]);
     }
+   
+    public function editProductName(Request $request){
+        $title = $request -> title;
+        $asin = $request -> asin;
+        $result = ProductInformation::where(['asin'=>$asin])
+                  ->update(['title'=>$title]);
+        return response()->json([
+            'data' => $result
+        ]);        
+    }
 
+    public function deleteRow(Request $request){
+        $asin = $request -> asin;
+        $result = ProductInformation::where(['asin'=>$asin])
+                  ->delete();
+        return response()->json([
+                'data' => $result
+        ]);        
+    }
    
 
 

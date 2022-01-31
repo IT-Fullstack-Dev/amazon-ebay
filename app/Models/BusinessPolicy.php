@@ -17,6 +17,8 @@ class BusinessPolicy extends Model
         'return_id',
         'return_name',
         'shipping_id',
-        'shipping_name'
+        'shipping_name',
+        'description',
+        'product_state'
     ];
 }
