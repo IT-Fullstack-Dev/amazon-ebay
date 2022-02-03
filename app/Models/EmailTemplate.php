@@ -9,7 +9,7 @@ class EmailTemplate extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $table = 'EmailTemplate';
+    protected $table = 'emailtemplate';
     protected $fillable = [
             'store_id',
             'email_template'
