@@ -111,7 +111,7 @@ class CheckProductController extends Controller
 
        foreach($productarray as $product){
            Log::info($product);
-            if(is_numeric($product['price']) & is_numeric($product['quantity'])){
+            if(is_numeric($product['price']) {
               $check = ProductInformation::where(['asin'=>$product['asin']])
                        ->get();
               if(count($check)==0){
