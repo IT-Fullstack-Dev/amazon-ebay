@@ -111,7 +111,7 @@ class CheckProductController extends Controller
 
        foreach($productarray as $product){
            Log::info($product);
-            if(is_numeric($product['price']) {
+            if(is_numeric($product['price'])) {
                   if($product['quantity']=='NaN' ){
                       
                   }
