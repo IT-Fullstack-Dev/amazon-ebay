@@ -113,10 +113,10 @@ class CheckProductController extends Controller
            Log::info($product);
             if(is_numeric($product['price'])) {
                   if($product['quantity']=='NaN' ){
-                      
+                       $product['quantity'] = 1;
                   }
                   else{
-                    $product['quantity'] = 1;
+                   
                   }
 
               $check = ProductInformation::where(['asin'=>$product['asin']])
